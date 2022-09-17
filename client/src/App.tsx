@@ -1,24 +1,41 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+
+const API_URL = process.env.REACT_APP_API_URL;
+const getSummary = async (text: string): Promise<string> => {
+  const request = { text };
+  const response = await fetch(`${API_URL}/summary`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(request),
+  });
+  return (await response.json()).summary;
+};
 
 function App() {
+  // Text source: https://ugo-ii.com/products/content
+  const [text, setText] = useState<string>(
+    "Employee recognition boosts morale and is the core of any great company. But, employee of the month awards are too temporary. UGO II has introduced employee of the decade awards to truly give our employees the sense that their contributions are appreciated. To ensure each employee will have a decade to be recognized in, UGO II has pre-reserved decades up to the year 32000."
+  );
+  const [summary, setSummary] = useState<string>("");
+
+  const submit = async () => {
+    setSummary(await getSummary(text));
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          submit();
+        }}
+      >
+        <textarea value={text} onChange={(e) => setText(e.target.value)} />
+        <input type="submit" value="submit" />
+      </form>
+      <p>{summary}</p>
     </div>
   );
 }
