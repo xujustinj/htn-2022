@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Button } from "@mui/material"
 
 
 const API_URL = process.env.REACT_APP_API_URL;
@@ -39,7 +40,7 @@ function App() {
         }}
       >
         <textarea value={text} onChange={(e) => setText(e.target.value)} />
-        <input type="submit" value="submit" />
+        <Button variant="contained" type="submit" value="submit">Submit</Button>
       </form>
       <p>{summary}</p>
     </div>
