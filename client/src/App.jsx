@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { Navbar } from "./components/common/Navbar/Navbar";
+import { Body } from "./components/common/Body/Body";
 
 
 const API_URL = process.env.REACT_APP_API_URL;
@@ -14,8 +16,6 @@ async function getSummary(text){
       return await response.json().summary;
 }
   
-    
-
 function App() {
      // Text source: https://ugo-ii.com/products/content
   const [text, setText] = useState(
@@ -25,23 +25,17 @@ function App() {
 
   const submit = async () => {
     setSummary(await getSummary(text));
+
+    
   };
 
 
-
+ 
 
   return (
-    <div>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          submit();
-        }}
-      >
-        <textarea value={text} onChange={(e) => setText(e.target.value)} />
-        <input type="submit" value="submit" />
-      </form>
-      <p>{summary}</p>
+    <div className="w-full h-full bg-myBlue ">
+      <Navbar />
+      <Body /> 
     </div>
   );
 }
