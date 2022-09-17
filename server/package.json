@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/xujustinj/htn-2022#readme",
   "dependencies": {
+    "axios": "^0.27.2",
     "cohere-ai": "^4.3.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.2",
