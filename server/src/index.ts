@@ -1,9 +1,10 @@
 import * as dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
-import { CohereSummarizer } from "./summarizer";
 import TextToSpeechV1 from 'ibm-watson/text-to-speech/v1'
 import { IamAuthenticator } from 'ibm-watson/auth'
+import { WikipediaExtractor } from "./extractor";
+import { CohereSummarizer } from "./summarizer";
 import { tTS } from "./speechToText";
 
 dotenv.config();
