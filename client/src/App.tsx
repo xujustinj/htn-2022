@@ -13,6 +13,7 @@ import { createBrowserRouter, RouterProvider, Route } from "react-router-dom";
 import { VideoCreation } from "./components/common/videoCreation/videoCreation";
 import { Formality } from "./components/common/videoCreation/Formality";
 import { Voice } from "./components/common/videoCreation/Voice";
+import { Music } from "./components/common/videoCreation/Music";
 
 const router = createBrowserRouter([
   {
@@ -33,6 +34,11 @@ const router = createBrowserRouter([
   {
     path: "/voice",
     element: <Voice />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/music",
+    element: <Music />,
     errorElement: <ErrorPage />,
   },
 ]);
