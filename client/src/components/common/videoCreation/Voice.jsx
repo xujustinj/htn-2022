@@ -30,10 +30,10 @@ export function Voice() {
                     <a href="/vid" class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300">Length</a>
                 </li>
                 <li class="mr-2">
-                    <a href="/formality" aria-current="page" class="flex p-4 text-blue-600 bg-gray-100 rounded-t-lg active dark:bg-gray-800 dark:text-blue-500">Formality</a>
+                    <a href="/formality"  class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300">Formality</a>
                 </li>
                 <li class="mr-2">
-                    <a href="#" aria-current="page" class="flex p-4 text-blue-600 bg-gray-100 rounded-t-lg active dark:bg-gray-800 dark:text-blue-500" >Voice</a>
+                    <a href="/voice" aria-current="page" class="flex p-4 text-blue-600 bg-gray-100 rounded-t-lg active dark:bg-gray-800 dark:text-blue-500" >Voice</a>
                 </li>
                 <li class="mr-2">
                     <a href="#" class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300">Music</a>
@@ -45,13 +45,19 @@ export function Voice() {
                 <div class="relative p-4 w-full max-w-lg h-full md:h-auto">
                     <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 md:p-8">
                         <div class="mb-4 text-sm font-light text-gray-500 dark:text-gray-400">
-                            <h3 class="mb-3 text-2xl font-bold text-gray-900 dark:text-white">How formal would you like the video to be?</h3>
+                            <h3 class="mb-3 text-2xl font-bold text-gray-900 dark:text-white">Which AI Model would you like to speak?</h3>
+
+                            <div class="justify-between items-center pt-0 space-y-4 sm:flex sm:space-y-0">
+            
+              <div class="items-center space-y-4 sm:space-x-4 sm:flex sm:space-y-0">
+                  <button id="close-modal" type="button"  class="py-2 px-4 w-full text-sm font-medium text-gray-500 bg-white rounded-lg border border-gray-200 sm:w-auto hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-primary-300 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">Cancel</button>
+                  <button id="confirm-button" type="button" class="py-2 px-4 w-full text-sm font-medium text-center text-white rounded-lg bg-primary-700 sm:w-auto hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Confirm</button>
+              </div>
+          </div>
 
 
 
-
-
-                            <input id="steps-range" type="range" min="0" max="6" value="1" step="1" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700" />
+                           
 
 
                         </div>
