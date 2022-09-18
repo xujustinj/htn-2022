@@ -12,6 +12,7 @@ import { Summary, SummaryDetail } from "./types/summary";
 import { createBrowserRouter, RouterProvider, Route } from "react-router-dom";
 import { VideoCreation } from "./components/common/videoCreation/videoCreation";
 import { Formality } from "./components/common/videoCreation/Formality";
+import { Voice } from "./components/common/videoCreation/Voice";
 
 const router = createBrowserRouter([
   {
@@ -27,6 +28,11 @@ const router = createBrowserRouter([
   {
     path: "/formality",
     element: <Formality />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/voice",
+    element: <Voice />,
     errorElement: <ErrorPage />,
   },
 ]);
