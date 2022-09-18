@@ -20,5 +20,8 @@
   "workspaces": [
     "server",
     "client"
-  ]
+  ],
+  "dependencies": {
+    "firebase": "^9.10.0"
+  }
 }

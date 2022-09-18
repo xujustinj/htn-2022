@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Navbar } from "./components/common/Navbar/Navbar";
 import { Body } from "./components/common/Body/Body";
+import { GetAudio } from "./GetAudio";
 import ErrorPage from "./error-page";
 
 import {
@@ -12,7 +13,7 @@ import {
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Body />,
+    element: <GetAudio />,
     errorElement: <ErrorPage />,
 
   },
