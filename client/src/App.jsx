@@ -1,7 +1,22 @@
 import React, { useState } from "react";
 import { Navbar } from "./components/common/Navbar/Navbar";
 import { Body } from "./components/common/Body/Body";
+import ErrorPage from "./error-page";
 
+import {
+  createBrowserRouter,
+  RouterProvider,
+  Route,
+} from "react-router-dom";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Body />,
+    errorElement: <ErrorPage />,
+
+  },
+]);
 
 const API_URL = process.env.REACT_APP_API_URL;
 async function getSummary(text){
@@ -29,15 +44,16 @@ function App() {
     
   };
 
+  <RouterProvider router={router} />
 
- 
 
   return (
     <div className="w-full h-full bg-myBlue ">
-      <Navbar />
-      <Body /> 
+          <RouterProvider router={router} />
+
     </div>
   );
 }
+
 
 export default App;
