@@ -1,12 +1,12 @@
 import axios from "axios";
-import { TextNode } from "./types/textTree";
+import { TextNode } from "../types/textTree";
 
 interface TextNodeWithLevel extends TextNode {
   level: number;
   children: Array<TextNodeWithLevel>;
 }
 
-export class WikipediaExtractor {
+export class WikipediaClient {
   public async extract(title: string): Promise<TextNode> {
     const url = `https://en.wikipedia.org/w/api.php?action=query&format=json&prop=extracts&titles=${title}&formatversion=2&explaintext=1`;
     const text: string = (await axios.get(url)).data.query.pages[0].extract;
