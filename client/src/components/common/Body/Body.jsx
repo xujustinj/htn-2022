@@ -23,6 +23,5 @@ export function Body() {
             <h1 className='font-serif ml-10 mt-3 text-3xl'><b>fun</b> to understand</h1>
             <h1 className='font-serif ml-10 mt-3 text-3xl'><b>easy</b> to understand</h1>
         </>
-
     )
 }
