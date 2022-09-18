@@ -2,7 +2,7 @@ import * as React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
-export function VideoCreation() {
+export function Formality() {
     return (
         // <div className='p-3'>
         //     <FontAwesomeIcon icon={faSearch} className='text-white text-xl' />
@@ -27,10 +27,10 @@ export function VideoCreation() {
 
             <ul class="mt-5 flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400">
                 <li class="mr-2">
-                    <a href="/vid" aria-current="page" class="flex p-4 text-blue-600 bg-gray-100 rounded-t-lg active dark:bg-gray-800 dark:text-blue-500">Length</a>
+                    <a href="/vid" class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300">Length</a>
                 </li>
                 <li class="mr-2">
-                    <a href="/formality" class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300">Formality</a>
+                    <a href="/formality" aria-current="page" class="flex p-4 text-blue-600 bg-gray-100 rounded-t-lg active dark:bg-gray-800 dark:text-blue-500">Formality</a>
                 </li>
                 <li class="mr-2">
                     <a href="#" class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300">Voice</a>
@@ -45,7 +45,7 @@ export function VideoCreation() {
                 <div class="relative p-4 w-full max-w-lg h-full md:h-auto">
                     <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 md:p-8">
                         <div class="mb-4 text-sm font-light text-gray-500 dark:text-gray-400">
-                            <h3 class="mb-3 text-2xl font-bold text-gray-900 dark:text-white">How long would you like the video to be?</h3>
+                            <h3 class="mb-3 text-2xl font-bold text-gray-900 dark:text-white">How formal would you like the video to be?</h3>
 
 
 
