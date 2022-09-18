@@ -26,43 +26,47 @@ const watsonClient = new WatsonClient(IBM_API_KEY);
 const wikipediaClient = new WikipediaClient();
 
 app.post("/summary", async (req, res) => {
-  const { title } = req.body;
-  const cachePath = `${CACHE_DIR}/${title}.json`;
-  if (fs.existsSync(cachePath)) {
-    res.send(fs.readFileSync(cachePath));
-  } else {
-    const content = await wikipediaClient.extract(title);
-    const summary = (await cohereClient.summarizeNode(content, 100)).trim();
+  try {
+    const { title } = req.body;
+    const cachePath = `${CACHE_DIR}/${title}.json`;
+    if (fs.existsSync(cachePath)) {
+      res.send(fs.readFileSync(cachePath));
+    } else {
+      const content = await wikipediaClient.extract(title);
+      const summary = (await cohereClient.summarizeNode(content, 100)).trim();
 
-    const sentences = (
-      summary.endsWith(".")
-        ? summary.split(".")
-        : summary.split(".").slice(0, -1)
-    ).map((s) => s.trim().concat("."));
+      const sentences = (
+        summary.endsWith(".")
+          ? summary.split(".")
+          : summary.split(".").slice(0, -1)
+      ).map((s) => s.trim().concat("."));
 
-    const fullSummary = await Promise.all(
-      sentences.map(async (sentence, i) => {
-        const keyphrase = await cohereClient.getKeyphrase(sentence);
-        const visualSrc = await pexelsClient.getVisual(keyphrase);
+      const fullSummary = await Promise.all(
+        sentences.map(async (sentence, i) => {
+          const keyphrase = await cohereClient.getKeyphrase(sentence);
+          const visualSrc = await pexelsClient.getVisual(keyphrase);
 
-        const audioPath = `${title}/tts-${i}.wav`;
-        firebaseClient.saveWAV(
-          audioPath,
-          await watsonClient.textToSpeech(sentence, "en-US_AllisonV3Voice")
-        );
+          const audioPath = `${title}/tts-${i}.wav`;
+          await firebaseClient.saveWAV(
+            audioPath,
+            await watsonClient.textToSpeech(sentence, "en-US_AllisonV3Voice")
+          );
 
-        return {
-          text: sentence,
-          keyphrase,
-          visualSrc,
-          audioPath,
-        };
-      })
-    );
+          return {
+            text: sentence,
+            keyphrase,
+            visualSrc,
+            audioPath,
+          };
+        })
+      );
 
-    const json = JSON.stringify(fullSummary, undefined, 2);
-    res.send(json);
-    fs.writeFileSync(cachePath, json);
+      const json = JSON.stringify(fullSummary, undefined, 2);
+      res.send(json);
+      fs.writeFileSync(cachePath, json);
+    }
+  } catch (e: unknown) {
+    console.log(e);
   }
 });
 
