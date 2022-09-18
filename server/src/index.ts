@@ -43,19 +43,26 @@ app.post("/tts", (req, res) => {
 });
 
 const COHERE_API_KEY = process.env.COHERE_API_KEY!;
-const summarizer = new CohereClient(COHERE_API_KEY);
+const cohereClient = new CohereClient(COHERE_API_KEY);
 const extractor = new WikipediaExtractor();
 app.post("/summary", async (req, res) => {
   const { title } = req.body;
 
   const content = await extractor.extract(title);
-  const summary = (await summarizer.summarizeNode(content, 100)).trim();
+  const summary = (await cohereClient.summarizeNode(content, 100)).trim();
 
   const sentences = (
     summary.endsWith(".") ? summary.split(".") : summary.split(".").slice(0, -1)
   ).map((s) => s.trim().concat("."));
 
-  res.json(sentences);
+  const fullSummary = await Promise.all(
+    sentences.map(async (sentence) => ({
+      text: sentence,
+      keyphrase: await cohereClient.getKeyphrase(sentence),
+    }))
+  );
+
+  res.json(fullSummary);
 
   // coming soon
   // sentences.forEach((s, i) => tts(s, "en-US_AllisonV3Voice", title));
