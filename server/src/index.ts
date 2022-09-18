@@ -1,73 +1,72 @@
 import cors from "cors";
 import * as dotenv from "dotenv";
 import express from "express";
-import TextToSpeechV1 from "ibm-watson/text-to-speech/v1";
-import { IamAuthenticator } from "ibm-watson/auth";
-import { WikipediaExtractor } from "./extractor";
+import fs from "fs";
 import { CohereClient } from "./cohere/client";
-import { tts } from "./textToSpeech";
+import { FirebaseClient } from "./firebase/client";
+import { PexelsClient } from "./pexels/client";
+import { WatsonClient } from "./watson/client";
+import { WikipediaClient } from "./wikipedia/client";
 
 dotenv.config();
-
+const CACHE_DIR = process.env.CACHE_DIR || "./.cache";
+const COHERE_API_KEY = process.env.COHERE_API_KEY!;
+const IBM_API_KEY = process.env.IBM_API_KEY!;
+const PEXELS_API_KEY = process.env.PEXELS_API_KEY!;
 const PORT = process.env.PORT || 3001;
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-const textToSpeech = new TextToSpeechV1({
-  authenticator: new IamAuthenticator({
-    apikey: process.env.IBM_KEY!,
-  }),
-  serviceUrl:
-    "https://api.us-east.text-to-speech.watson.cloud.ibm.com/instances/c23b276d-bd22-4bba-b646-0f2d20aaa607",
-});
-app.get("/voices", (req, res) => {
-  textToSpeech
-    .listVoices()
-    // @ts-ignore
-    .then((voices) => {
-      res.send(JSON.stringify(voices, null, 2));
-    })
-    .catch((err: unknown) => {
-      console.log("error:", err);
-    });
-});
-
-app.post("/tts", (req, res) => {
-  const { summary, model, folder } = req.body;
-  console.log(summary, model, folder);
-
-  tts(summary, model, folder);
-  res.send("success");
-});
-
-const COHERE_API_KEY = process.env.COHERE_API_KEY!;
 const cohereClient = new CohereClient(COHERE_API_KEY);
-const extractor = new WikipediaExtractor();
+const firebaseClient = new FirebaseClient();
+const pexelsClient = new PexelsClient(PEXELS_API_KEY);
+const watsonClient = new WatsonClient(IBM_API_KEY);
+const wikipediaClient = new WikipediaClient();
+
 app.post("/summary", async (req, res) => {
   const { title } = req.body;
+  const cachePath = `${CACHE_DIR}/${title}.json`;
+  if (fs.existsSync(cachePath)) {
+    res.send(fs.readFileSync(cachePath));
+  } else {
+    const content = await wikipediaClient.extract(title);
+    const summary = (await cohereClient.summarizeNode(content, 100)).trim();
 
-  const content = await extractor.extract(title);
-  const summary = (await cohereClient.summarizeNode(content, 100)).trim();
+    const sentences = (
+      summary.endsWith(".")
+        ? summary.split(".")
+        : summary.split(".").slice(0, -1)
+    ).map((s) => s.trim().concat("."));
 
-  const sentences = (
-    summary.endsWith(".") ? summary.split(".") : summary.split(".").slice(0, -1)
-  ).map((s) => s.trim().concat("."));
+    const fullSummary = await Promise.all(
+      sentences.map(async (sentence, i) => {
+        const keyphrase = await cohereClient.getKeyphrase(sentence);
+        const visualSrc = await pexelsClient.getVisual(keyphrase);
 
-  const fullSummary = await Promise.all(
-    sentences.map(async (sentence) => ({
-      text: sentence,
-      keyphrase: await cohereClient.getKeyphrase(sentence),
-    }))
-  );
+        const audioPath = `${title}/tts-${i}.wav`;
+        firebaseClient.saveWAV(
+          audioPath,
+          await watsonClient.textToSpeech(sentence, "en-US_AllisonV3Voice")
+        );
 
-  res.json(fullSummary);
+        return {
+          text: sentence,
+          keyphrase,
+          visualSrc,
+          audioPath,
+        };
+      })
+    );
 
-  // coming soon
-  // sentences.forEach((s, i) => tts(s, "en-US_AllisonV3Voice", title));
+    const json = JSON.stringify(fullSummary, undefined, 2);
+    res.send(json);
+    fs.writeFileSync(cachePath, json);
+  }
 });
 
 app.listen(PORT, async () => {
   console.log(`Server listening on ${PORT}`);
+  console.log(`Server using cache directory ${CACHE_DIR}`);
 });
