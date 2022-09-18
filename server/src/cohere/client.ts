@@ -8,6 +8,7 @@ import {
 } from "./samples";
 
 const DELIMITER = "--";
+const CONDENSE_LIMIT = 4;
 
 function wordCount(text: string) {
   return text.split(/\s+/gms).length;
@@ -73,6 +74,11 @@ export class CohereClient {
     const response = await cohere.generate(request);
     // console.log("Cohere response:", JSON.stringify(response, undefined, 2));
 
+    if (response.statusCode !== 200) {
+      console.log("Request failed:", response);
+      throw new Error("Cohere request failed");
+    }
+
     console.log(
       `\n\n========\n\n${request.prompt}${response.body.generations[0].text}`
     );
@@ -120,7 +126,11 @@ export class CohereClient {
 
       const summary = (await Promise.all(summaries)).join(" ");
       let condensate = "";
-      while (wordCount(condensate) < quota) {
+      for (
+        let i = 0;
+        i < CONDENSE_LIMIT && wordCount(condensate) < quota;
+        i++
+      ) {
         condensate +=
           " " +
           (await this.cohere(
