@@ -10,11 +10,17 @@ import { SummaryVideo } from "./remotion/SummaryVideo";
 import { Summary, SummaryDetail } from "./types/summary";
 
 import { createBrowserRouter, RouterProvider, Route } from "react-router-dom";
+import { VideoCreation } from "./components/common/videoCreation/videoCreation";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Body />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/vid",
+    element: <VideoCreation />,
     errorElement: <ErrorPage />,
   },
 ]);
@@ -59,6 +65,7 @@ function App() {
 
   return (
     <div className="w-full flex justify-center items-center h-full bg-myBlue">
+      <RouterProvider router={router} />
       {summary === undefined || (
         <Player
           className=""
