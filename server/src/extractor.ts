@@ -4,7 +4,7 @@ import { Section } from "./types/section";
 interface MutableSection extends Section {
   level: number;
   header: string;
-  body: Array<string>;
+  paragraphs: Array<string>;
   subsections: Array<MutableSection>;
 }
 
@@ -18,19 +18,24 @@ export class WikipediaExtractor {
       {
         level: 0,
         header: title,
-        body: this.getParagraphs(opening),
+        paragraphs: this.getParagraphs(opening),
         subsections: [],
       },
     ];
-    for (const match of text.matchAll(/(={2,}) (\w+) ={2,}(.*?)\n\n\n/gms)) {
+    for (const match of text.matchAll(/(={2,}) (.*?) ={2,}(.*?)\n\n\n/gms)) {
       const level = match[1].length - 1;
       const header = match[2];
-      const body = this.getParagraphs(match[3]);
+      const paragraphs = this.getParagraphs(match[3]);
       while (stack[stack.length - 1].level >= level) {
         stack.pop();
       }
 
-      const section: MutableSection = { level, header, body, subsections: [] };
+      const section: MutableSection = {
+        level,
+        header,
+        paragraphs,
+        subsections: [],
+      };
       stack[stack.length - 1].subsections.push(section);
       stack.push(section);
     }
