@@ -4,7 +4,7 @@ import express from "express";
 import TextToSpeechV1 from "ibm-watson/text-to-speech/v1";
 import { IamAuthenticator } from "ibm-watson/auth";
 import { WikipediaExtractor } from "./extractor";
-import { CohereSummarizer } from "./summarize/summarizer";
+import { CohereClient } from "./cohere/client";
 import { tts } from "./textToSpeech";
 
 dotenv.config();
@@ -43,13 +43,18 @@ app.post("/tts", (req, res) => {
 });
 
 const COHERE_API_KEY = process.env.COHERE_API_KEY!;
-const summarizer = new CohereSummarizer(COHERE_API_KEY);
+const summarizer = new CohereClient(COHERE_API_KEY);
 const extractor = new WikipediaExtractor();
 app.post("/summary", async (req, res) => {
   const { title } = req.body;
 
   const content = await extractor.extract(title);
-  const sentences = await summarizer.summarizeSection(content);
+  const summary = (await summarizer.summarizeNode(content, 100)).trim();
+
+  const sentences = (
+    summary.endsWith(".") ? summary.split(".") : summary.split(".").slice(0, -1)
+  ).map((s) => s.trim().concat("."));
+
   res.json(sentences);
 
   // coming soon
